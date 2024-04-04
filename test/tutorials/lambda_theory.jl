@@ -89,7 +89,7 @@ ex |> reduce |> println
 # if we want to get alpha-conversion we need to maintain a set of free variables
 # in the EClass. this can be done via an `AnalysisType`
 
-const LambdaAnalysis = Set
+const LambdaAnalysis = Set{Symbol}
 
 getdata(eclass) = isnothing(eclass.data) ? LambdaAnalysis() : eclass.data
 
@@ -129,7 +129,6 @@ isfree(s, a::Apply) = isfree(s, a.lambda)
 isfree(s, x::Variable) = s==x.x
 isfree(s, x::Symbol) = s==x
 function isfree(s, ec::EClass)
-  @info s ec.data
   isnothing(ec.data) ? false : s ∈ ec.data
 end
 
