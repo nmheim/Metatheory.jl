@@ -44,7 +44,7 @@ SUITE["basic_maths"]["simpl1"] =
 
 foo_math = :(0 + (1 * foo) * 0 + (a * 0) + a)
 SUITE["basic_maths"]["foo"] =
-  @benchmarkable (@assert :(a + b + d) == simplify($foo_math, $maths_theory, $(SaturationParams()), postprocess_maths))
+  @benchmarkable (@assert :a == simplify($foo_math, $maths_theory, $(SaturationParams()), postprocess_maths))
 
 # ==================================================================
 
