@@ -2,6 +2,8 @@ struct Extractor{CostFun,Cost}
   g::EGraph
   cost_function::CostFun
   costs::Dict{Id,Tuple{Cost,Int64}} # Cost and index in eclass
+  Extractor{CF,C}(g::EGraph, cf::CF, d::Dict{Id, Tuple{C, Int64}}) where {CF,C} = 
+    new{CF,C}(g,cf,d)
 end
 
 """
@@ -9,7 +11,7 @@ Given a cost function, extract the expression
 with the smallest computed cost from an [`EGraph`](@ref)
 """
 function Extractor(g::EGraph, cost_function::Function, cost_type = Float64)
-  extractor = Extractor{typeof(cost_function),cost_type}(g, cost_function, Dict{Id,Tuple{cost_type,VecExpr}}())
+  extractor = Extractor{typeof(cost_function),cost_type}(g, cost_function, Dict{Id,Tuple{cost_type,Int64}}())
   find_costs!(extractor)
   extractor
 end
@@ -103,7 +105,7 @@ function astsize_inv(n::VecExpr, op, costs::Vector{Float64})::Float64
   cost = -1 + sum(costs)
 end
 
-function extract!(g::EGraph, costfun, cost_type = Float64)
-  Extractor(g, costfun, cost_type)()
+function extract!(g::EGraph, costfun, root=g.root, cost_type = Float64)
+  Extractor(g, costfun, cost_type)(root)
 end
 
