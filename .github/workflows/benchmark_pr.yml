@@ -18,26 +18,19 @@ jobs:
         name: Setup rust toolchain
 
       - uses: actions/checkout@v4
+
       - uses: julia-actions/setup-julia@v2
         with:
           version: "1"
 
       - name: Clone egg-benchmark repo
-        run: |
-          git clone https://github.com/nmheim/egg-benchmark.git egg-benchmark
-          ls
-          pwd
+        run: git clone https://github.com/nmheim/egg-benchmark.git egg-benchmark
 
       - name: Build AirspeedVelocity
         env:
           JULIA_NUM_THREADS: 2
         run: |
           # Lightweight build step, as sometimes the runner runs out of memory:
-          ls
-          ls egg-benchmark
-          ls ./egg-benchmark/scripts
-          cat ./egg-benchmark/scripts/Project.toml
-          julia --project=./egg-benchmark/scripts -e 'import Pkg; Pkg.status()'
           julia --project=./egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.instantiate()'
           julia --project=./egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
 
@@ -80,7 +73,7 @@ jobs:
       - name: Create markdown table from benchmarks
         run: |
           ls
-          julia --project=egg-benchmark/scripts egg-benchmark/scripts/load_results.jl -o table.md  -b ${{github.event.pull_request.head.sha}} -b "${{github.event.repository.default_branch}}"
+          julia --project=egg-benchmark/scripts egg-benchmark/scripts/load_results.jl -o table.md  -b ${{github.event.pull_request.head.sha}} -b "${{github.event.repository.default_branch}}" --mt-results=results/
           echo '### Benchmark Results' > body.md
           echo '' >> body.md
           echo '' >> body.md
