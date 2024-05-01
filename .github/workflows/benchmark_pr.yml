@@ -73,7 +73,7 @@ jobs:
       - name: Create markdown table from benchmarks
         run: |
           ls
-          julia --project=egg-benchmark/scripts egg-benchmark/scripts/load_results.jl -o table.md  -b ${{github.event.pull_request.head.sha}} -b "${{github.event.repository.default_branch}}" --mt-results=results/
+          julia --project=egg-benchmark/scripts egg-benchmark/scripts/load_results.jl -o table.md  -b ${{github.event.pull_request.head.sha}} -b "${{github.event.repository.default_branch}}" --mt-results=results/ --egg-results=egg-benchmark/target/criterion
           echo '### Benchmark Results' > body.md
           echo '' >> body.md
           echo '' >> body.md
