@@ -18,7 +18,7 @@ jobs:
         name: Setup rust toolchain
 
       - name: Clone egg-benchmark repo
-        run: git clone https://github.com/nmheim/egg-benchmark.git
+        run: git clone https://github.com/nmheim/egg-benchmark.git egg-benchmark
 
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
@@ -31,7 +31,7 @@ jobs:
         run: |
           # Lightweight build step, as sometimes the runner runs out of memory:
           ls
-          ls ./egg-benchmark
+          ls egg-benchmark
           ls ./egg-benchmark/scripts
           cat ./egg-benchmark/scripts/Project.toml
           julia --project=./egg-benchmark/scripts -e 'import Pkg; Pkg.status()'
