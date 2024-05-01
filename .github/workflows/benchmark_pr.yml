@@ -32,20 +32,23 @@ jobs:
         with:
           version: "1"
 
+      - name: Build AirspeedVelocity
+        env:
+          JULIA_NUM_THREADS: 2
+        run: |
+          # Lightweight build step, as sometimes the runner runs out of memory:
+          julia --project=./egg-benchmark/scripts -e 'import Pkg; Pkg.status()'
+          julia --project=./egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.instantiate()'
+          julia --project=./egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
+
+
+
       - uses: julia-actions/cache@v1
       - name: Extract Package Name from Project.toml
         id: extract-package-name
         run: |
           PACKAGE_NAME=$(grep "^name" Project.toml | sed 's/^name = "\(.*\)"$/\1/')
           echo "::set-output name=package_name::$PACKAGE_NAME"
-
-      - name: Build AirspeedVelocity
-        env:
-          JULIA_NUM_THREADS: 2
-        run: |
-          # Lightweight build step, as sometimes the runner runs out of memory:
-          julia --project=egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.instantiate()'
-          julia --project=egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
 
       - name: Add ~/.julia/bin to PATH
         run: |
