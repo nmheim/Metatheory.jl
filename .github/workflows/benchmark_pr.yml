@@ -18,7 +18,10 @@ jobs:
         name: Setup rust toolchain
 
       - name: Clone egg-benchmark repo
-        run: git clone https://github.com/nmheim/egg-benchmark.git egg-benchmark
+        run: |
+          git clone https://github.com/nmheim/egg-benchmark.git egg-benchmark
+          ls
+          pwd
 
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
