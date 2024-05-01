@@ -30,6 +30,7 @@ jobs:
           JULIA_NUM_THREADS: 2
         run: |
           # Lightweight build step, as sometimes the runner runs out of memory:
+          ls
           ls ./egg-benchmark
           ls ./egg-benchmark/scripts
           cat ./egg-benchmark/scripts/Project.toml
