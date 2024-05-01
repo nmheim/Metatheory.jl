@@ -23,7 +23,8 @@ jobs:
       - name: Run egg benchmarks
         run: |
           cd ./egg-benchmark
-          cargo bench
+          # cargo bench
+          cargo bench -- "basic_maths/simpl1"
           cd ../
 
       - uses: actions/checkout@v4
@@ -43,7 +44,8 @@ jobs:
           JULIA_NUM_THREADS: 2
         run: |
           # Lightweight build step, as sometimes the runner runs out of memory:
-          julia --project=benchmark -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
+          julia --project=egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.instantiate()'
+          julia --project=egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
 
       - name: Add ~/.julia/bin to PATH
         run: |
