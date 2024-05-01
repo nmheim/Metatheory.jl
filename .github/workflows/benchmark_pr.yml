@@ -1,4 +1,4 @@
-name: Benchmark a pull request
+name: Benchmark pull request
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  generate_plots:
+  Metatheory_vs_egg:
     runs-on: ubuntu-latest
 
     steps:
