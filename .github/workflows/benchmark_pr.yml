@@ -17,16 +17,16 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         name: Setup rust toolchain
 
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: "1"
+
       - name: Clone egg-benchmark repo
         run: |
           git clone https://github.com/nmheim/egg-benchmark.git egg-benchmark
           ls
           pwd
-
-      - uses: actions/checkout@v4
-      - uses: julia-actions/setup-julia@v2
-        with:
-          version: "1"
 
       - name: Build AirspeedVelocity
         env:
