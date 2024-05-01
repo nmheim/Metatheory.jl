@@ -20,13 +20,6 @@ jobs:
       - name: Clone egg-benchmark repo
         run: git clone https://github.com/nmheim/egg-benchmark.git
 
-      - name: Run egg benchmarks
-        run: |
-          cd ./egg-benchmark
-          # cargo bench
-          cargo bench -- "basic_maths/simpl1"
-          cd ../
-
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
         with:
@@ -37,11 +30,12 @@ jobs:
           JULIA_NUM_THREADS: 2
         run: |
           # Lightweight build step, as sometimes the runner runs out of memory:
+          ls ./egg-benchmark
+          ls ./egg-benchmark/scripts
+          cat ./egg-benchmark/scripts/Project.toml
           julia --project=./egg-benchmark/scripts -e 'import Pkg; Pkg.status()'
           julia --project=./egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.instantiate()'
           julia --project=./egg-benchmark/scripts -e 'ENV["JULIA_PKG_PRECOMPILE_AUTO"]=0; import Pkg; Pkg.build("AirspeedVelocity")'
-
-
 
       - uses: julia-actions/cache@v1
       - name: Extract Package Name from Project.toml
@@ -54,23 +48,30 @@ jobs:
         run: |
           echo "$HOME/.julia/bin" >> $GITHUB_PATH
 
-      - name: Run benchmarks
+      - name: Run egg benchmarks
+        run: |
+          cd ./egg-benchmark
+          # cargo bench
+          cargo bench -- "basic_maths/simpl1"
+          cd ../
+
+      - name: Run Metatheory benchmarks
         run: |
           echo $PATH
           ls -l ~/.julia/bin
           mkdir results
           benchpkg ${{ steps.extract-package-name.outputs.package_name }} --rev="${{github.event.repository.default_branch}},${{github.event.pull_request.head.sha}}" --url=${{ github.event.repository.clone_url }} --bench-on="${{github.event.repository.default_branch}}" --output-dir=results/ --tune
 
-      - name: Create plots from benchmarks
-        run: |
-          mkdir -p plots
-          benchpkgplot ${{ steps.extract-package-name.outputs.package_name }} --rev="${{github.event.repository.default_branch}},${{github.event.pull_request.head.sha}}" --npart=10 --format=png --input-dir=results/ --output-dir=plots/
+      # - name: Create plots from benchmarks
+      #   run: |
+      #     mkdir -p plots
+      #     benchpkgplot ${{ steps.extract-package-name.outputs.package_name }} --rev="${{github.event.repository.default_branch}},${{github.event.pull_request.head.sha}}" --npart=10 --format=png --input-dir=results/ --output-dir=plots/
 
-      - name: Upload plot as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: plots
-          path: plots
+      #- name: Upload plot as artifact
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: plots
+      #    path: plots
 
       - name: Create markdown table from benchmarks
         run: |
